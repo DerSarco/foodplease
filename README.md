@@ -90,6 +90,7 @@ En este repositorio solo la aplicación cliente está desarrollada como flujo co
 ## Decisiones de diseño
 
 - Sistema Stitch “Vibrant Velocity”: naranja `#FF5722`, carbón `#263238`, fondo `#F5F7F8`, Inter, retícula de 8 px y radios de 12 px.
+- Ícono oficial “FoodPlease App Icon” recuperado desde Stitch y aplicado a Android, web y la marca interna.
 - Jerarquía de alto contraste para acelerar búsqueda, elección y confirmación.
 - Espectro logístico por estados: ámbar, celeste, naranja, morado y verde.
 - Iconografía y gradientes propios de Material para no depender de assets con licencias externas ni red.

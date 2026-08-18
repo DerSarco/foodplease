@@ -9,17 +9,13 @@ class Brand extends StatelessWidget {
   Widget build(BuildContext c) => Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Container(
-        width: small ? 38 : 54,
-        height: small ? 38 : 54,
-        decoration: BoxDecoration(
-          color: orange,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Icon(
-          Icons.delivery_dining,
-          color: Colors.white,
-          size: small ? 23 : 31,
+      ClipRRect(
+        borderRadius: BorderRadius.circular(small ? 11 : 16),
+        child: Image.asset(
+          'assets/branding/app_icon.png',
+          width: small ? 38 : 54,
+          height: small ? 38 : 54,
+          fit: BoxFit.cover,
         ),
       ),
       const SizedBox(width: 10),

@@ -57,7 +57,14 @@ flutter run -d medium_phone
 
 Cada cambio enviado a `main` genera un APK mediante GitHub Actions. También puede iniciarse manualmente desde **Actions → Build FoodPlease APK → Run workflow**. Al finalizar, el archivo está disponible en **Artifacts → FoodPlease-APK** y se descarga como `FoodPlease.apk`.
 
-El APK se conserva durante 30 días y utiliza firma de depuración, adecuada para instalar y demostrar este MVP académico, pero no para publicar en Google Play.
+Al publicar una etiqueta con formato `v*` —por ejemplo, `v1.0.0`— el mismo flujo crea además una **GitHub Release** y adjunta `FoodPlease.apk` como descarga permanente del repositorio:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+El artefacto de Actions se conserva durante 30 días; el archivo adjunto a una Release permanece disponible hasta eliminar esa publicación. Ambos utilizan firma de depuración, adecuada para instalar y demostrar este MVP académico, pero no para publicar en Google Play.
 
 Verificación:
 
@@ -124,9 +131,9 @@ La aplicación cliente está desarrollada como flujo completo. El repartidor dis
 
 - API REST, persistencia, autenticación segura y autorización por roles.
 - Pasarela de pago, cálculo dinámico de rutas, GPS, notificaciones push y ubicación real.
-- Gestión web completa de restaurante y app completa de repartidor.
+- Aplicación completa de repartidor y ampliación de la gestión operativa del restaurante dentro del ecosistema móvil.
 - Accesibilidad ampliada, internacionalización y pruebas de integración/E2E.
-- Firma de producción y publicación en Google Play o GitHub Releases.
+- Firma de producción y publicación en Google Play.
 
 ## Estado de verificación
 

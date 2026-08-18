@@ -38,6 +38,18 @@ Tokens: naranja `#FF5722`, carbón `#263238`, fondo `#F5F7F8`, superficies blanc
 | Integración | `Partner` para restaurante/repartidor y diagrama README |
 | Estados vacíos | búsqueda, carrito y pedidos |
 
+## Estructura interna
+
+- `app`: composición, alcance de dependencias y estado coordinador.
+- `core`: tema, formato monetario y widgets compartidos sin conocimiento de features.
+- `features/auth`: acceso y registro.
+- `features/catalog`: modelos de dominio, datos simulados y catálogo/menú.
+- `features/cart`, `checkout` y `tracking`: etapas independientes del embudo de compra.
+- `features/orders` y `profile`: historial, cuenta e integración con otros roles.
+- `features/shell`: navegación primaria entre módulos.
+
+Esta separación mantiene el MVP simple, pero permite reemplazar el catálogo simulado, extraer controladores por feature y agregar servicios REST sin concentrar nuevamente toda la aplicación en un único archivo.
+
 ## Guion de demostración
 
 1. Ingresar con datos precargados.

@@ -35,6 +35,7 @@ migrate_working_dir/
 # Insumos temporales de análisis y binarios entregables locales
 /work/
 /outputs/*.apk
+/outputs/*.apk.zip
 /coverage/
 
 # Symbolication related

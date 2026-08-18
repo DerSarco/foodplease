@@ -50,7 +50,33 @@ flutter build apk --debug
 
 ## Arquitectura
 
-El MVP usa una capa de estado local (`AppState`), modelos de dominio y pantallas Flutter. La evolución propuesta conserva la arquitectura previa:
+El código se organiza por feature. `app/` compone la aplicación y mantiene el estado coordinador; `core/` contiene piezas transversales; cada feature encapsula su presentación y, cuando corresponde, dominio y datos:
+
+```text
+lib/
+├── main.dart
+├── app/
+│   ├── app.dart
+│   ├── app_scope.dart
+│   └── app_state.dart
+├── core/
+│   ├── theme/app_theme.dart
+│   ├── utils/currency.dart
+│   └── widgets/
+└── features/
+    ├── auth/presentation/
+    ├── catalog/{domain,data,presentation}/
+    ├── cart/presentation/
+    ├── checkout/presentation/
+    ├── tracking/presentation/
+    ├── orders/presentation/
+    ├── profile/presentation/
+    └── shell/presentation/
+```
+
+Las dependencias apuntan desde presentación hacia estado/dominio y nunca desde `core` hacia una feature. El catálogo separa modelos y repositorio simulado, dejando un punto claro para sustituir los datos locales por una implementación REST. Para el tamaño actual del MVP, `AppState` actúa como coordinador observable; al incorporar backend puede dividirse en controladores por feature sin reescribir las pantallas.
+
+La evolución propuesta conserva la arquitectura de ecosistema previa:
 
 ```text
 App cliente Flutter ─┐

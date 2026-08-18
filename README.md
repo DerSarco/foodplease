@@ -4,7 +4,9 @@
 
 # FoodPlease · MVP académico
 
-Aplicación Flutter visual y navegable para APTC106, Semana 9, Sumativa 3. Continúa la propuesta del Grupo 11 y demuestra el ciclo completo de un pedido con datos locales.
+Aplicación móvil Flutter visual y navegable para APTC106, Semana 9, Sumativa 3. Continúa la propuesta del Grupo 11 y demuestra el ciclo completo de un pedido con datos locales.
+
+> **Alcance:** este repositorio contiene exclusivamente el MVP de la aplicación móvil FoodPlease. No incluye una plataforma web independiente. El cliente dispone del flujo completo y los roles de restaurante y repartidor se representan mediante vistas demostrativas dentro de la misma aplicación Flutter.
 
 ## Vista general
 
@@ -34,7 +36,7 @@ Aplicación Flutter visual y navegable para APTC106, Semana 9, Sumativa 3. Conti
 - Mapa interactivo de OpenStreetMap con puntos A/B y ruta precargada; la posición avanza con la simulación.
 - Historial, perfil y cierre de sesión.
 - Estados vacíos para búsquedas, carrito y pedidos.
-- Vista demostrativa de restaurante y flujo operativo de repartidor con ruta, detalle y confirmación de entrega.
+- Vistas móviles demostrativas para restaurante y repartidor, con actualización del pedido, ruta, detalle y confirmación de entrega.
 - Diseño responsive basado en Stitch para teléfono Android estándar (referencia 390 × 844).
 
 ## Ejecución
@@ -43,12 +45,6 @@ Requiere Flutter 3.47.0 y Dart 3.13.0.
 
 ```bash
 flutter pub get
-flutter run -d chrome
-```
-
-Para Android:
-
-```bash
 flutter emulators --launch medium_phone
 flutter run -d medium_phone
 ```
@@ -72,7 +68,6 @@ Verificación:
 dart format --output=none --set-exit-if-changed lib test
 flutter analyze
 flutter test
-flutter build web
 flutter build apk --debug
 ```
 
@@ -106,21 +101,24 @@ lib/
 
 Las dependencias apuntan desde presentación hacia estado/dominio y nunca desde `core` hacia una feature. El catálogo separa modelos y repositorio simulado, dejando un punto claro para sustituir los datos locales por una implementación REST. Para el tamaño actual del MVP, `AppState` actúa como coordinador observable; al incorporar backend puede dividirse en controladores por feature sin reescribir las pantallas.
 
-La evolución propuesta conserva la arquitectura de ecosistema previa:
+El MVP utiliza una única aplicación móvil con experiencias diferenciadas por rol:
 
 ```text
-App cliente Flutter ─┐
-Web restaurante ─────┼─ HTTPS/JSON → API REST → servicios → base central
-App repartidor ──────┘                    ├ pagos/mapas/notificaciones
-                                         └ asignación y reportes
+Aplicación móvil FoodPlease (Flutter)
+├── Cliente: recorrido completo de compra y seguimiento
+├── Restaurante: vista demostrativa de gestión del pedido
+└── Repartidor: vista demostrativa de ruta y entrega
+        │
+        └── Estado y repositorios locales simulados
+                └── Evolución futura: API REST → servicios → base central
 ```
 
-La aplicación cliente está desarrollada como flujo completo. El repartidor dispone de un flujo demostrativo de ruta y confirmación de entrega; el restaurante mantiene una vista operativa acotada. No existe backend ni sincronización real entre dispositivos.
+No se construyó una plataforma web. La aplicación cliente está desarrollada como flujo completo; el repartidor dispone de un recorrido demostrativo de ruta y confirmación, y el restaurante mantiene una vista móvil operativa acotada. No existe backend ni sincronización real entre dispositivos.
 
 ## Decisiones de diseño
 
 - Sistema Stitch “Vibrant Velocity”: naranja `#FF5722`, carbón `#263238`, fondo `#F5F7F8`, Inter, retícula de 8 px y radios de 12 px.
-- Ícono oficial “FoodPlease App Icon” recuperado desde Stitch y aplicado a Android, web y la marca interna.
+- Ícono oficial “FoodPlease App Icon” recuperado desde Stitch y aplicado a Android y a la marca interna.
 - Jerarquía de alto contraste para acelerar búsqueda, elección y confirmación.
 - Espectro logístico por estados: ámbar, celeste, naranja, morado y verde.
 - Iconografía y gradientes propios de Material para no depender de assets con licencias externas ni red.
@@ -131,7 +129,7 @@ La aplicación cliente está desarrollada como flujo completo. El repartidor dis
 
 - API REST, persistencia, autenticación segura y autorización por roles.
 - Pasarela de pago, cálculo dinámico de rutas, GPS, notificaciones push y ubicación real.
-- Aplicación completa de repartidor y ampliación de la gestión operativa del restaurante dentro del ecosistema móvil.
+- Ampliación de los recorridos móviles de restaurante y repartidor, actualmente demostrativos.
 - Accesibilidad ampliada, internacionalización y pruebas de integración/E2E.
 - Firma de producción y publicación en Google Play.
 
@@ -139,7 +137,6 @@ La aplicación cliente está desarrollada como flujo completo. El repartidor dis
 
 - `flutter analyze`: sin incidencias.
 - `flutter test`: 3 pruebas aprobadas.
-- `flutter build web`: compilación correcta.
 - `flutter build apk --debug`: APK generado correctamente.
 
 Las imágenes visibles en este README se mantienen en `assets/readme/`. Los artefactos locales de compilación, capturas de trabajo y documentación de entrega están excluidos mediante `.gitignore`.

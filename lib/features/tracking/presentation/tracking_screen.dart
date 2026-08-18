@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 
 import '../../../app/app_scope.dart';
+import '../../../core/maps/delivery_map.dart';
 import '../../../core/theme/app_theme.dart';
 
 const stages = ['Recibido', 'Preparación', 'Listo', 'En camino', 'Entregado'];
@@ -21,132 +20,29 @@ const stageColors = [
   Color(0xFF2E7D32),
 ];
 
-const deliveryRoute = <LatLng>[
-  LatLng(-33.42385, -70.60840),
-  LatLng(-33.42445, -70.61075),
-  LatLng(-33.42595, -70.61220),
-  LatLng(-33.42755, -70.61485),
-  LatLng(-33.42915, -70.61735),
-  LatLng(-33.43070, -70.62000),
-];
-
 class Tracking extends StatelessWidget {
   const Tracking({super.key});
+
   @override
-  Widget build(BuildContext c) {
-    final s = Scope.of(c), a = s.stage;
-    final messages = [
-      'El restaurante recibió tu pedido.',
-      'Tu comida se está preparando.',
-      'El pedido espera a su repartidor.',
-      'Martín va rumbo a tu dirección.',
-      'El pedido fue entregado correctamente.',
-    ];
+  Widget build(BuildContext context) {
+    final state = Scope.of(context);
+    final active = state.stage;
+    final routeIndex = [0, 0, 0, 3, 5][active];
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pedido #FP-2408'),
-        backgroundColor: canvas,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: Stack(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: SizedBox(
-              height: 250,
-              child: FlutterMap(
-                options: const MapOptions(
-                  initialCenter: LatLng(-33.42725, -70.61420),
-                  initialZoom: 14.8,
-                  minZoom: 12,
-                  maxZoom: 18,
+          Positioned.fill(child: DeliveryMap(progressIndex: routeIndex)),
+          SafeArea(
+            child: Column(
+              children: [
+                _TrackingHeader(onBack: () => Navigator.pop(context)),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                  child: _TrackingPanel(active: active, onNext: state.next),
                 ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'cl.foodplease.foodplease',
-                  ),
-                  PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: deliveryRoute,
-                        color: orange,
-                        strokeWidth: 5,
-                        borderColor: Colors.white,
-                        borderStrokeWidth: 2,
-                      ),
-                    ],
-                  ),
-                  MarkerLayer(
-                    markers: [
-                      Marker(
-                        point: deliveryRoute.first,
-                        width: 48,
-                        height: 48,
-                        child: MapPin(
-                          label: 'A',
-                          icon: Icons.restaurant,
-                          color: charcoal,
-                        ),
-                      ),
-                      Marker(
-                        point: deliveryRoute.last,
-                        width: 48,
-                        height: 48,
-                        child: MapPin(
-                          label: 'B',
-                          icon: Icons.home,
-                          color: Color(0xFF1976D2),
-                        ),
-                      ),
-                      Marker(
-                        point: deliveryRoute[[0, 0, 0, 3, 5][a]],
-                        width: 46,
-                        height: 46,
-                        child: MapPin(
-                          icon: Icons.delivery_dining,
-                          color: a == 4 ? stageColors[4] : orange,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SimpleAttributionWidget(
-                    source: Text('© OpenStreetMap contributors'),
-                    backgroundColor: Color(0xDDFFFFFF),
-                  ),
-                ],
-              ),
+              ],
             ),
-          ),
-          const SizedBox(height: 22),
-          Text(
-            a == 4 ? '¡Que lo disfrutes!' : stages[a],
-            style: Theme.of(c).textTheme.headlineMedium,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            messages[a],
-            style: const TextStyle(color: Colors.black54, fontSize: 16),
-          ),
-          const SizedBox(height: 24),
-          ...List.generate(5, (i) => Stage(i, a)),
-          const SizedBox(height: 18),
-          if (a < 4)
-            OutlinedButton.icon(
-              onPressed: s.next,
-              icon: const Icon(Icons.play_arrow),
-              label: const Text('Simular siguiente estado'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: charcoal,
-                minimumSize: const Size.fromHeight(52),
-              ),
-            ),
-          const SizedBox(height: 10),
-          const Text(
-            'Mapa real de OpenStreetMap; ruta, GPS y avance simulados.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black45, fontSize: 12),
           ),
         ],
       ),
@@ -154,99 +50,246 @@ class Tracking extends StatelessWidget {
   }
 }
 
-class Stage extends StatelessWidget {
-  const Stage(this.i, this.active, {super.key});
-  final int i, active;
+class _TrackingHeader extends StatelessWidget {
+  const _TrackingHeader({required this.onBack});
+  final VoidCallback onBack;
+
   @override
-  Widget build(BuildContext c) {
-    final done = i <= active;
-    return Row(
+  Widget build(BuildContext context) => Container(
+    height: 58,
+    margin: const EdgeInsets.symmetric(horizontal: 12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 12)],
+    ),
+    child: Row(
+      children: [
+        IconButton(onPressed: onBack, icon: const Icon(Icons.arrow_back)),
+        const Expanded(
+          child: Text(
+            'FoodPlease',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: orange,
+              fontWeight: FontWeight.w900,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.help_outline)),
+      ],
+    ),
+  );
+}
+
+class _TrackingPanel extends StatelessWidget {
+  const _TrackingPanel({required this.active, required this.onNext});
+  final int active;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 22)],
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
+        Center(
+          child: Container(
+            width: 42,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.circular(3),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: done ? stageColors[i] : Colors.white,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: done ? stageColors[i] : Colors.black26,
-                  width: 2,
-                ),
-              ),
-              child: Icon(
-                stageIcons[i],
-                size: 20,
-                color: done ? Colors.white : Colors.black38,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    active == 4 ? 'Pedido entregado' : '15–20 min',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  Text(
+                    active == 4 ? '¡Que lo disfrutes!' : _message(active),
+                    style: const TextStyle(color: Colors.black54),
+                  ),
+                ],
               ),
             ),
-            if (i < 4)
-              Container(
-                width: 3,
-                height: 32,
-                color: i < active ? stageColors[i + 1] : Colors.black12,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              decoration: BoxDecoration(
+                color: const Color(0xFFECEFF1),
+                borderRadius: BorderRadius.circular(18),
               ),
+              child: Row(
+                children: [
+                  Icon(
+                    active == 4 ? Icons.check_circle : Icons.schedule,
+                    size: 16,
+                    color: active == 4 ? const Color(0xFF2E7D32) : charcoal,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    active == 4 ? 'Listo' : '14:30',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-        const SizedBox(width: 14),
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Text(
-            stages[i],
-            style: TextStyle(
-              fontWeight: done ? FontWeight.w800 : FontWeight.w500,
-              color: done ? charcoal : Colors.black38,
+        const SizedBox(height: 16),
+        _HorizontalProgress(active: active),
+        const Divider(height: 26),
+        const Row(
+          children: [
+            CircleAvatar(
+              radius: 23,
+              backgroundColor: Color(0xFFFFE0D6),
+              child: Icon(Icons.person, color: orange),
             ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Martín R.',
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  Text(
+                    '★ 4,9 · 120+ entregas',
+                    style: TextStyle(color: Colors.black54, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+            _ContactButton(icon: Icons.chat_bubble_outline),
+            SizedBox(width: 7),
+            _ContactButton(icon: Icons.phone_outlined),
+          ],
+        ),
+        if (active < 4) ...[
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton.icon(
+              onPressed: onNext,
+              icon: const Icon(Icons.play_arrow, size: 18),
+              label: const Text('Simular siguiente estado'),
+              style: TextButton.styleFrom(foregroundColor: charcoal),
+            ),
+          ),
+        ],
+        const Center(
+          child: Text(
+            'Mapa real; ruta, ubicación y comunicaciones simuladas.',
+            style: TextStyle(fontSize: 10, color: Colors.black45),
           ),
         ),
       ],
-    );
-  }
+    ),
+  );
+
+  static String _message(int stage) => [
+    'Pedido confirmado',
+    'Preparando tu pedido',
+    'Esperando al repartidor',
+    'Tu pedido va en camino',
+    'Entrega finalizada',
+  ][stage];
 }
 
-class MapPin extends StatelessWidget {
-  const MapPin({
-    super.key,
-    required this.icon,
-    required this.color,
-    this.label,
-  });
-  final IconData icon;
-  final Color color;
-  final String? label;
+class _HorizontalProgress extends StatelessWidget {
+  const _HorizontalProgress({required this.active});
+  final int active;
 
   @override
-  Widget build(BuildContext context) => Stack(
-    alignment: Alignment.center,
+  Widget build(BuildContext context) => Column(
     children: [
-      Container(
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 3),
-          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 7)],
-        ),
-        child: Icon(icon, color: Colors.white, size: 21),
+      Row(
+        children: List.generate(9, (index) {
+          if (index.isOdd) {
+            return Expanded(
+              child: Container(
+                height: 3,
+                color: index ~/ 2 < active ? orange : Colors.black12,
+              ),
+            );
+          }
+          final step = index ~/ 2;
+          final done = step <= active;
+          return Container(
+            width: step == active ? 14 : 10,
+            height: step == active ? 14 : 10,
+            decoration: BoxDecoration(
+              color: done ? stageColors[step] : Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: done ? stageColors[step] : Colors.black26,
+                width: 2,
+              ),
+            ),
+          );
+        }),
       ),
-      if (label != null)
-        Positioned(
-          right: 0,
-          top: 0,
-          child: CircleAvatar(
-            radius: 9,
-            backgroundColor: Colors.white,
+      const SizedBox(height: 6),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(
+          stages.length,
+          (i) => SizedBox(
+            width: 58,
             child: Text(
-              label!,
+              stages[i],
+              textAlign: i == 0
+                  ? TextAlign.left
+                  : i == 4
+                  ? TextAlign.right
+                  : TextAlign.center,
+              maxLines: 2,
               style: TextStyle(
-                color: color,
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
+                fontSize: 9,
+                fontWeight: i == active ? FontWeight.w800 : FontWeight.w500,
+                color: i <= active ? charcoal : Colors.black38,
               ),
             ),
           ),
         ),
+      ),
     ],
+  );
+}
+
+class _ContactButton extends StatelessWidget {
+  const _ContactButton({required this.icon});
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 38,
+    height: 38,
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.black12),
+      shape: BoxShape.circle,
+    ),
+    child: Icon(icon, size: 19),
   );
 }

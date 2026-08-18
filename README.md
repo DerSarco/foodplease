@@ -20,7 +20,7 @@ Aplicación Flutter visual y navegable para APTC106, Semana 9, Sumativa 3. Conti
 - Mapa interactivo de OpenStreetMap con puntos A/B y ruta precargada; la posición avanza con la simulación.
 - Historial, perfil y cierre de sesión.
 - Estados vacíos para búsquedas, carrito y pedidos.
-- Vistas demostrativas mínimas para restaurante y repartidor desde Perfil.
+- Vista demostrativa de restaurante y flujo operativo de repartidor con ruta, detalle y confirmación de entrega.
 - Diseño responsive basado en Stitch para teléfono Android estándar (referencia 390 × 844).
 
 ## Ejecución

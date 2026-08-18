@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/app_scope.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/common_widgets.dart';
+import '../../courier/presentation/courier_delivery_screen.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
@@ -89,7 +90,7 @@ class Profile extends StatelessWidget {
                 onTap: () => Navigator.push(
                   c,
                   MaterialPageRoute(
-                    builder: (_) => const Partner('Repartidor'),
+                    builder: (_) => const CourierDeliveryScreen(),
                   ),
                 ),
               ),

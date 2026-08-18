@@ -2,6 +2,20 @@
 
 Aplicación Flutter visual y navegable para APTC106, Semana 9, Sumativa 3. Continúa la propuesta del Grupo 11 y demuestra el ciclo completo de un pedido con datos locales.
 
+<p align="center">
+  <img src="assets/readme/app-icon.png" alt="Ícono FoodPlease" width="120">
+</p>
+
+## Vista general
+
+| Inicio y restaurantes | Menú del restaurante |
+|---|---|
+| <img src="assets/readme/inicio.png" alt="Inicio de FoodPlease" width="280"> | <img src="assets/readme/menu.png" alt="Menú de Burger Lab" width="280"> |
+
+| Seguimiento del cliente | Entrega del repartidor |
+|---|---|
+| <img src="assets/readme/seguimiento.png" alt="Seguimiento del pedido" width="280"> | <img src="assets/readme/repartidor.png" alt="Flujo del repartidor" width="280"> |
+
 ## Demostración
 
 - Correo precargado: `cliente@foodplease.cl`
@@ -62,6 +76,7 @@ lib/
 │   └── app_state.dart
 ├── core/
 │   ├── theme/app_theme.dart
+│   ├── maps/delivery_map.dart
 │   ├── utils/currency.dart
 │   └── widgets/
 └── features/
@@ -69,6 +84,7 @@ lib/
     ├── catalog/{domain,data,presentation}/
     ├── cart/presentation/
     ├── checkout/presentation/
+    ├── courier/presentation/
     ├── tracking/presentation/
     ├── orders/presentation/
     ├── profile/presentation/
@@ -86,7 +102,7 @@ App repartidor ──────┘                    ├ pagos/mapas/notifica
                                          └ asignación y reportes
 ```
 
-En este repositorio solo la aplicación cliente está desarrollada como flujo completo. Las vistas de restaurante y repartidor son mockups interactivos acotados para explicar la integración. No existe backend ni sincronización real.
+La aplicación cliente está desarrollada como flujo completo. El repartidor dispone de un flujo demostrativo de ruta y confirmación de entrega; el restaurante mantiene una vista operativa acotada. No existe backend ni sincronización real entre dispositivos.
 
 ## Decisiones de diseño
 
@@ -95,9 +111,8 @@ En este repositorio solo la aplicación cliente está desarrollada como flujo co
 - Jerarquía de alto contraste para acelerar búsqueda, elección y confirmación.
 - Espectro logístico por estados: ámbar, celeste, naranja, morado y verde.
 - Iconografía y gradientes propios de Material para no depender de assets con licencias externas ni red.
-- Datos locales deterministas para que la evaluación sea repetible y funcione sin conexión.
-
-El inventario de requisitos, pantallas y trazabilidad está en [`docs/INVENTARIO.md`](docs/INVENTARIO.md).
+- Datos locales deterministas para que la evaluación sea repetible; únicamente la cartografía requiere conexión para cargar tiles.
+- Mapas de [OpenStreetMap](https://www.openstreetmap.org/) con atribución visible y ruta A/B simulada.
 
 ## Alcance pendiente
 
@@ -105,8 +120,13 @@ El inventario de requisitos, pantallas y trazabilidad está en [`docs/INVENTARIO
 - Pasarela de pago, cálculo dinámico de rutas, GPS, notificaciones push y ubicación real.
 - Gestión web completa de restaurante y app completa de repartidor.
 - Accesibilidad ampliada, internacionalización y pruebas de integración/E2E.
-- Publicación en GitHub: la instrucción académica la exige, pero este encargo prohíbe publicar sin autorización/conexión explícita.
+- Publicación del repositorio y APK mediante GitHub/GitHub Releases.
 
-## Evidencia
+## Estado de verificación
 
-Las capturas verificadas están en `outputs/`. La compilación web queda en `build/web` y el APK de depuración, cuando se construye, en `build/app/outputs/flutter-apk/app-debug.apk`.
+- `flutter analyze`: sin incidencias.
+- `flutter test`: 3 pruebas aprobadas.
+- `flutter build web`: compilación correcta.
+- `flutter build apk --debug`: APK generado correctamente.
+
+Las imágenes visibles en este README se mantienen en `assets/readme/`. Los artefactos locales de compilación, capturas de trabajo y documentación de entrega están excluidos mediante `.gitignore`.

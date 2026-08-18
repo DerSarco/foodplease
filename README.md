@@ -2,6 +2,11 @@
   <img src="https://github.com/user-attachments/assets/5bd42b17-6710-4279-8873-deb63d51a390" alt="FoodPlease: ecosistema de pedidos y entregas" width="100%">
 </p>
 
+<p align="center">
+  <a href="https://github.com/DerSarco/foodplease/releases/latest"><strong>⬇ Descargar la demo de FoodPlease para Android (APK)</strong></a><br>
+  <sub>Disponible desde GitHub Releases.</sub>
+</p>
+
 # FoodPlease · MVP académico
 
 Aplicación móvil Flutter visual y navegable para APTC106, Semana 9, Sumativa 3. Continúa la propuesta del Grupo 11 y demuestra el ciclo completo de un pedido con datos locales.

@@ -53,6 +53,12 @@ flutter emulators --launch medium_phone
 flutter run -d medium_phone
 ```
 
+### Descargar el APK desde GitHub
+
+Cada cambio enviado a `main` genera un APK mediante GitHub Actions. También puede iniciarse manualmente desde **Actions → Build FoodPlease APK → Run workflow**. Al finalizar, el archivo está disponible en **Artifacts → FoodPlease-APK** y se descarga como `FoodPlease.apk`.
+
+El APK se conserva durante 30 días y utiliza firma de depuración, adecuada para instalar y demostrar este MVP académico, pero no para publicar en Google Play.
+
 Verificación:
 
 ```bash
@@ -120,7 +126,7 @@ La aplicación cliente está desarrollada como flujo completo. El repartidor dis
 - Pasarela de pago, cálculo dinámico de rutas, GPS, notificaciones push y ubicación real.
 - Gestión web completa de restaurante y app completa de repartidor.
 - Accesibilidad ampliada, internacionalización y pruebas de integración/E2E.
-- Publicación del repositorio y APK mediante GitHub/GitHub Releases.
+- Firma de producción y publicación en Google Play o GitHub Releases.
 
 ## Estado de verificación
 

@@ -17,6 +17,7 @@ Aplicación Flutter visual y navegable para APTC106, Semana 9, Sumativa 3. Conti
 - Carrito con suma/resta de cantidades, despacho y total.
 - Selección de medio de pago simulado y confirmación.
 - Seguimiento manual por cinco estados: recibido, preparación, listo, en camino y entregado.
+- Mapa interactivo de OpenStreetMap con puntos A/B y ruta precargada; la posición avanza con la simulación.
 - Historial, perfil y cierre de sesión.
 - Estados vacíos para búsquedas, carrito y pedidos.
 - Vistas demostrativas mínimas para restaurante y repartidor desde Perfil.
@@ -101,7 +102,7 @@ El inventario de requisitos, pantallas y trazabilidad está en [`docs/INVENTARIO
 ## Alcance pendiente
 
 - API REST, persistencia, autenticación segura y autorización por roles.
-- Pasarela de pago, mapas/GPS, notificaciones push y ubicación real.
+- Pasarela de pago, cálculo dinámico de rutas, GPS, notificaciones push y ubicación real.
 - Gestión web completa de restaurante y app completa de repartidor.
 - Accesibilidad ampliada, internacionalización y pruebas de integración/E2E.
 - Publicación en GitHub: la instrucción académica la exige, pero este encargo prohíbe publicar sin autorización/conexión explícita.

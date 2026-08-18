@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../app/app_scope.dart';
 import '../../../core/theme/app_theme.dart';
@@ -17,6 +19,15 @@ const stageColors = [
   orange,
   Color(0xFF673AB7),
   Color(0xFF2E7D32),
+];
+
+const deliveryRoute = <LatLng>[
+  LatLng(-33.42385, -70.60840),
+  LatLng(-33.42445, -70.61075),
+  LatLng(-33.42595, -70.61220),
+  LatLng(-33.42755, -70.61485),
+  LatLng(-33.42915, -70.61735),
+  LatLng(-33.43070, -70.62000),
 ];
 
 class Tracking extends StatelessWidget {
@@ -39,37 +50,73 @@ class Tracking extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Container(
-            height: 250,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE3F2FD),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Stack(
-              children: [
-                CustomPaint(
-                  size: const Size(double.infinity, 250),
-                  painter: RoutePainter(),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: SizedBox(
+              height: 250,
+              child: FlutterMap(
+                options: const MapOptions(
+                  initialCenter: LatLng(-33.42725, -70.61420),
+                  initialZoom: 14.8,
+                  minZoom: 12,
+                  maxZoom: 18,
                 ),
-                const Positioned(
-                  left: 30,
-                  bottom: 32,
-                  child: MapDot(Icons.home, Color(0xFF1976D2)),
-                ),
-                Positioned(
-                  right: 38,
-                  top: 32,
-                  child: MapDot(
-                    a >= 3 ? Icons.delivery_dining : Icons.restaurant,
-                    a >= 4 ? stageColors[4] : charcoal,
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'cl.foodplease.foodplease',
                   ),
-                ),
-                Positioned(
-                  left: 115 + a * 22,
-                  top: 105,
-                  child: const MapDot(Icons.delivery_dining, orange),
-                ),
-              ],
+                  PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: deliveryRoute,
+                        color: orange,
+                        strokeWidth: 5,
+                        borderColor: Colors.white,
+                        borderStrokeWidth: 2,
+                      ),
+                    ],
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: deliveryRoute.first,
+                        width: 48,
+                        height: 48,
+                        child: MapPin(
+                          label: 'A',
+                          icon: Icons.restaurant,
+                          color: charcoal,
+                        ),
+                      ),
+                      Marker(
+                        point: deliveryRoute.last,
+                        width: 48,
+                        height: 48,
+                        child: MapPin(
+                          label: 'B',
+                          icon: Icons.home,
+                          color: Color(0xFF1976D2),
+                        ),
+                      ),
+                      Marker(
+                        point: deliveryRoute[[0, 0, 0, 3, 5][a]],
+                        width: 46,
+                        height: 46,
+                        child: MapPin(
+                          icon: Icons.delivery_dining,
+                          color: a == 4 ? stageColors[4] : orange,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SimpleAttributionWidget(
+                    source: Text('© OpenStreetMap contributors'),
+                    backgroundColor: Color(0xDDFFFFFF),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 22),
@@ -97,7 +144,7 @@ class Tracking extends StatelessWidget {
             ),
           const SizedBox(height: 10),
           const Text(
-            'Mapa, GPS, notificaciones y avance simulados.',
+            'Mapa real de OpenStreetMap; ruta, GPS y avance simulados.',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.black45, fontSize: 12),
           ),
@@ -159,39 +206,47 @@ class Stage extends StatelessWidget {
   }
 }
 
-class MapDot extends StatelessWidget {
-  const MapDot(this.icon, this.color, {super.key});
+class MapPin extends StatelessWidget {
+  const MapPin({
+    super.key,
+    required this.icon,
+    required this.color,
+    this.label,
+  });
   final IconData icon;
   final Color color;
+  final String? label;
+
   @override
-  Widget build(BuildContext c) => Container(
-    width: 46,
-    height: 46,
-    decoration: BoxDecoration(
-      color: color,
-      shape: BoxShape.circle,
-      border: Border.all(color: Colors.white, width: 4),
-      boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 8)],
-    ),
-    child: Icon(icon, color: Colors.white, size: 23),
+  Widget build(BuildContext context) => Stack(
+    alignment: Alignment.center,
+    children: [
+      Container(
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 3),
+          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 7)],
+        ),
+        child: Icon(icon, color: Colors.white, size: 21),
+      ),
+      if (label != null)
+        Positioned(
+          right: 0,
+          top: 0,
+          child: CircleAvatar(
+            radius: 9,
+            backgroundColor: Colors.white,
+            child: Text(
+              label!,
+              style: TextStyle(
+                color: color,
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ),
+    ],
   );
-}
-
-class RoutePainter extends CustomPainter {
-  @override
-  void paint(Canvas c, Size s) {
-    final p = Paint()
-      ..color = const Color(0xFF90A4AE)
-      ..strokeWidth = 5
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    final path = Path()
-      ..moveTo(52, s.height - 55)
-      ..cubicTo(90, 150, 170, 190, 205, 115)
-      ..cubicTo(240, 45, 300, 150, s.width - 60, 55);
-    c.drawPath(path, p);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter o) => false;
 }

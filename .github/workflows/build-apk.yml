@@ -61,12 +61,20 @@ jobs:
           retention-days: 30
 
       - name: Publish APK in GitHub Releases
-        if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create "$GITHUB_REF_NAME"
-          FoodPlease.apk
-          --verify-tag
-          --generate-notes
-          --title "FoodPlease $GITHUB_REF_NAME"
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            RELEASE_TAG="$GITHUB_REF_NAME"
+          else
+            RELEASE_TAG="v1.0.0"
+          fi
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" FoodPlease.apk --clobber
+          else
+            gh release create "$RELEASE_TAG" FoodPlease.apk \
+              --target "$GITHUB_SHA" \
+              --generate-notes \
+              --title "FoodPlease $RELEASE_TAG"
+          fi

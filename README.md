@@ -58,12 +58,7 @@ flutter run -d medium_phone
 
 Cada cambio enviado a `main` genera un APK mediante GitHub Actions. También puede iniciarse manualmente desde **Actions → Build FoodPlease APK → Run workflow**. Al finalizar, el archivo está disponible en **Artifacts → FoodPlease-APK** y se descarga como `FoodPlease.apk`.
 
-Al publicar una etiqueta con formato `v*` —por ejemplo, `v1.0.0`— el mismo flujo crea además una **GitHub Release** y adjunta `FoodPlease.apk` como descarga permanente del repositorio:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
+Después de validar un cambio en `main`, el mismo flujo crea o actualiza la **GitHub Release `v1.0.0`** y adjunta `FoodPlease.apk` como descarga permanente del repositorio. Si posteriormente se publica otra etiqueta con formato `v*`, se genera la Release correspondiente a esa versión.
 
 El artefacto de Actions se conserva durante 30 días; el archivo adjunto a una Release permanece disponible hasta eliminar esa publicación. Ambos utilizan firma de depuración, adecuada para instalar y demostrar este MVP académico, pero no para publicar en Google Play.
 

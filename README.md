@@ -1,10 +1,10 @@
+<p align="center">
+  <img src="assets/readme/cover.png" alt="FoodPlease: ecosistema de pedidos y entregas" width="100%">
+</p>
+
 # FoodPlease · MVP académico
 
 Aplicación Flutter visual y navegable para APTC106, Semana 9, Sumativa 3. Continúa la propuesta del Grupo 11 y demuestra el ciclo completo de un pedido con datos locales.
-
-<p align="center">
-  <img src="assets/readme/app-icon.png" alt="Ícono FoodPlease" width="120">
-</p>
 
 ## Vista general
 

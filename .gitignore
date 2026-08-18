@@ -32,10 +32,11 @@ migrate_working_dir/
 .pub/
 /build/
 
-# Insumos temporales de análisis y binarios entregables locales
+# Documentación de entrega, análisis y artefactos generados localmente
+/docs/
 /work/
-/outputs/*.apk
-/outputs/*.apk.zip
+/output/
+/outputs/
 /coverage/
 
 # Symbolication related

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/cover.png" alt="FoodPlease: ecosistema de pedidos y entregas" width="100%">
+  <img src="https://github.com/user-attachments/assets/5bd42b17-6710-4279-8873-deb63d51a390" alt="FoodPlease: ecosistema de pedidos y entregas" width="100%">
 </p>
 
 # FoodPlease · MVP académico

@@ -1,6 +1,6 @@
 {
-    "name": "foodplease",
-    "short_name": "foodplease",
+    "name": "FoodPlease",
+    "short_name": "FoodPlease",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
